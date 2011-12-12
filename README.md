@@ -5,7 +5,7 @@ You may even delete just converted files optionally.
 
 `~$ ruby erb2haml.rb -h`  
 `Usage: erb2haml.rb [options] [path1, path2, ...]`  
-`pathN - path to directory, if no paths are present the script's directory is used'`  
+`pathN - path to directory, if no paths are present the script's directory is used`  
 `    -f, --force                      Force delete source ERB files after being converted`
 
 
