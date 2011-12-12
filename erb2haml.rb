@@ -14,8 +14,8 @@ class Erb2Haml
       end
     end.parse!
 
-    ARGV.each do |a|
-      @@paths.push a if File.exists? a
+    ARGV.each do |argument|
+      @@paths.push argument if File.exists? argument
     end
     @@paths.push(File.dirname(__FILE__)) if @@paths.empty?
   end
