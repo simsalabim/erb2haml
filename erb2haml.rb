@@ -7,7 +7,7 @@ class Erb2Haml
   def initialize
     OptionParser.new do |opts|
       opts.banner = 'Usage: erb2haml.rb [options] [path1, path2, ...]' + "\n" + 
-                    'path could be both filepath or path to directory, if no paths are present the script\'s directory is used'
+                    'pathN - path to directory, if no paths are present the script\'s directory is used'
 
       opts.on('-f', '--force', 'Force delete source ERB files after being converted') do |f|
         @@options[:force] = true
@@ -17,7 +17,7 @@ class Erb2Haml
     ARGV.each do |argument|
       @@paths.push argument if File.exists? argument
     end
-    @@paths.push(File.dirname(__FILE__)) if @@paths.empty?
+    @@paths.push File.dirname(__FILE__) if @@paths.empty?
   end
 
   def run
