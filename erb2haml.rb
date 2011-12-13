@@ -3,7 +3,7 @@ require 'optparse'
 class Erb2Haml
 
   def initialize
-    check_for_required_gems
+    check_for_dependencies
 
     @paths = []
     @options = {}
@@ -14,7 +14,7 @@ class Erb2Haml
       opts.on('-f', '--force', 'Force delete source ERB files after being converted') do |option|
         @options[:force] = true
       end
-      opts.on('-v', '--verbose', 'Describe actions script will do') do |option|
+      opts.on('-v', '--verbose', 'Verbose output') do |option|
         @options[:verbose] = true
       end
     end.parse!
@@ -26,16 +26,18 @@ class Erb2Haml
   end
 
 
-  def check_for_required_gems
+  def check_for_dependencies
+    has_error = false
     if `which html2haml`.empty?
-      puts 'ERROR: html2haml is not installed' + "\n" + 'Try first: gem install haml'
-      exit false
+      puts "ERROR: html2haml is not installed, try first:\t gem install haml"
+      has_error = true
     end
     gem_list = `gem list`
     if not gem_list.include? 'hpricot'
-      puts 'ERROR: hpricot is not installed' + "\n" + 'Try first: gem install hpricot'
-      exit false
+      puts "ERROR: hpricot is not installed, try first:\t gem install hpricot"
+      has_error = true
     end
+    exit false if has_error
   end
 
 
