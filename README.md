@@ -5,7 +5,12 @@ You may even delete just converted files optionally.
 
 `~$ ruby erb2haml.rb -h`  
 `Usage: erb2haml.rb [options] [path1, path2, ...]`  
-`pathN - path to directory, if no paths are present the script's directory is used`  
+`` 
+`Exampe path_to/erb2haml.rb -fevg file1 file2` 
+`Exampe path_to/erb2haml.rb -fg ` 
+`Exampe path_to/erb2haml.rb -g path1 path2 ` 
+`` 
+`pathN - path to directory, if no paths are present calling pwd is used`  
 `    -f, --force                      Force delete source ERB files after being converted`
 `    -v, --verbose                    Verbose output`
 `    -g, --git_delete                 Assumes you're working in a git repo and performs git rm instead of system rm`
