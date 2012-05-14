@@ -5,6 +5,7 @@ class Erb2Haml
   def initialize
     check_for_dependencies
 
+    @files = []
     @paths = []
     @options = {}
     OptionParser.new do |opts|
@@ -17,12 +18,21 @@ class Erb2Haml
       opts.on('-v', '--verbose', 'Verbose output') do |option|
         @options[:verbose] = true
       end
+      opts.on('-g', '--git_delete', 'Performs a git rm instead of system rm') do |option|
+        @options[:git_delete] = true
+      end
+      opts.on('-e', '--files', 'operates on supplied file or files, not all files in a path') do |option|
+        @options[:files] = true
+      end
     end.parse!
 
-    ARGV.each do |argument|
-      @paths.push argument if File.exists? argument
+    if @options[:files]
+      ARGV.each {|argument|  @files.push argument if File.exists? argument }
+    else
+      ARGV.each {|argument|  @paths.push argument if File.exists? argument }
     end
-    @paths.push File.dirname(__FILE__) if @paths.empty?
+
+    @paths.push Dir.pwd if @paths.empty? #dir that script was called from 
   end
 
 
@@ -42,16 +52,37 @@ class Erb2Haml
 
 
   def run
+    @options[:files] ? run_on_files : run_on_paths
+  end
+
+  def run_on_files
+    @files.each do |file|
+      execute(file)
+    end
+  end
+
+  def run_on_paths
     @paths.each do |path|
+      puts path
       Dir["#{path}/**/*.erb"].each do |file|
-        puts "Converting: #{file}..." if @options[:verbose]
-        `html2haml -e #{file} #{file.gsub(/\.erb$/, '.haml')}`
-        if @options[:force]
-          `rm -rf #{file}`
-          puts "Deleted: #{file}" if @options[:verbose]
-        end
+        execute(file)
       end
     end
+  end
+
+  def execute(file)
+    puts "Converting: #{file}..." if @options[:verbose]
+
+    `html2haml -e #{file} #{file.gsub(/\.erb$/, '.haml')}`
+
+    if @options[:force]
+      puts "Deleting: #{file}" if @options[:verbose]
+      `#{delete_command} #{file}`
+    end
+  end
+
+  def delete_command
+    @options[:git_delete] ? "git rm" : "rm -rf"
   end
 
 end
